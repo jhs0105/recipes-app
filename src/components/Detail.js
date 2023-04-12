@@ -21,7 +21,6 @@ function Detail() {
     },
     [title]
   );
-
   return (
     <>
       {loading ? (
@@ -29,16 +28,76 @@ function Detail() {
       ) : (
         <>
           <Header></Header>
-          <div>
-            <div>{recipe.RCP_NM}</div>
+          <div className="image-box">
             <img src={recipe.ATT_FILE_NO_MAIN} alt="" />
+          </div>
+          <div className="contents">
             <div>{recipe.RCP_PARTS_DTLS}</div>
             <ul>
-              <li>{recipe.MANUAL01 && recipe.MANUAL01}</li>
-              <li>{recipe.MANUAL02 && recipe.MANUAL02}</li>
-              <li>{recipe.MANUAL03 && recipe.MANUAL03}</li>
-              <li>{recipe.MANUAL04 && recipe.MANUAL04}</li>
-              <li>{recipe.MANUAL05 && recipe.MANUAL05}</li>
+              {recipe.MANUAL01 && (
+                <li>
+                  {recipe.MANUAL_IMG01 && (
+                    <img src={recipe.MANUAL_IMG01} alt="" />
+                  )}
+                  {recipe.MANUAL01}
+                </li>
+              )}
+              {recipe.MANUAL02 && (
+                <li>
+                  {recipe.MANUAL_IMG02 && (
+                    <img src={recipe.MANUAL_IMG02} alt="" />
+                  )}
+                  {recipe.MANUAL02}
+                </li>
+              )}
+              {recipe.MANUAL03 && (
+                <li>
+                  {recipe.MANUAL_IMG03 && (
+                    <img src={recipe.MANUAL_IMG03} alt="" />
+                  )}
+                  {recipe.MANUAL03}
+                </li>
+              )}
+              {recipe.MANUAL04 && (
+                <li>
+                  {recipe.MANUAL_IMG04 && (
+                    <img src={recipe.MANUAL_IMG04} alt="" />
+                  )}
+                  {recipe.MANUAL04}
+                </li>
+              )}
+              {recipe.MANUAL05 && (
+                <li>
+                  {recipe.MANUAL_IMG05 && (
+                    <img src={recipe.MANUAL_IMG05} alt="" />
+                  )}
+                  {recipe.MANUAL05}
+                </li>
+              )}
+              {recipe.MANUAL06 && (
+                <li>
+                  {recipe.MANUAL_IMG06 && (
+                    <img src={recipe.MANUAL_IMG06} alt="" />
+                  )}
+                  {recipe.MANUAL06}
+                </li>
+              )}
+              {recipe.MANUAL07 && (
+                <li>
+                  {recipe.MANUAL_IMG07 && (
+                    <img src={recipe.MANUAL_IMG07} alt="" />
+                  )}
+                  {recipe.MANUAL07}
+                </li>
+              )}
+              {recipe.MANUAL08 && (
+                <li>
+                  {recipe.MANUAL_IMG08 && (
+                    <img src={recipe.MANUAL_IMG08} alt="" />
+                  )}
+                  {recipe.MANUAL08}
+                </li>
+              )}
             </ul>
           </div>
         </>

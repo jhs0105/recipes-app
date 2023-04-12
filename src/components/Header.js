@@ -8,8 +8,10 @@ function Header() {
   };
   return (
     <div>
-      요리 레시피
-      <button onClick={back}>dd</button>
+      <h1>오늘의 요리!</h1>
+      <button onClick={back}>
+        <i className="fa-solid fa-arrow-rotate-left"></i>
+      </button>
     </div>
   );
 }
