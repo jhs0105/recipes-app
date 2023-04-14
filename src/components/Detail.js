@@ -7,6 +7,7 @@ function Detail() {
   const [recipe, setRecipe] = useState({});
   const [loading, setLoading] = useState(true);
   const title = useParams().title;
+  const list = [];
 
   useEffect(
     function () {
@@ -16,11 +17,25 @@ function Detail() {
         )
         .then((response) => {
           setRecipe(response.data.COOKRCP01.row[0]);
+          for (let i = 1; i < 20; i++) {
+            list.push({
+              food: recipe[`MANUAL0${i}`],
+              foodImg: recipe[`MANUAL_IMG0${i}`],
+            });
+          }
           setLoading(false);
         });
     },
     [title]
   );
+  for (let i = 1; i < 20; i++) {
+    list.push({
+      food: recipe[`MANUAL0${i}`],
+      foodImg: recipe[`MANUAL_IMG0${i}`],
+    });
+  }
+  //console.log(list);
+
   return (
     <>
       {loading ? (
@@ -34,70 +49,16 @@ function Detail() {
           <div className="contents">
             <div>{recipe.RCP_PARTS_DTLS}</div>
             <ul>
-              {recipe.MANUAL01 && (
-                <li>
-                  {recipe.MANUAL_IMG01 && (
-                    <img src={recipe.MANUAL_IMG01} alt="" />
-                  )}
-                  {recipe.MANUAL01}
-                </li>
-              )}
-              {recipe.MANUAL02 && (
-                <li>
-                  {recipe.MANUAL_IMG02 && (
-                    <img src={recipe.MANUAL_IMG02} alt="" />
-                  )}
-                  {recipe.MANUAL02}
-                </li>
-              )}
-              {recipe.MANUAL03 && (
-                <li>
-                  {recipe.MANUAL_IMG03 && (
-                    <img src={recipe.MANUAL_IMG03} alt="" />
-                  )}
-                  {recipe.MANUAL03}
-                </li>
-              )}
-              {recipe.MANUAL04 && (
-                <li>
-                  {recipe.MANUAL_IMG04 && (
-                    <img src={recipe.MANUAL_IMG04} alt="" />
-                  )}
-                  {recipe.MANUAL04}
-                </li>
-              )}
-              {recipe.MANUAL05 && (
-                <li>
-                  {recipe.MANUAL_IMG05 && (
-                    <img src={recipe.MANUAL_IMG05} alt="" />
-                  )}
-                  {recipe.MANUAL05}
-                </li>
-              )}
-              {recipe.MANUAL06 && (
-                <li>
-                  {recipe.MANUAL_IMG06 && (
-                    <img src={recipe.MANUAL_IMG06} alt="" />
-                  )}
-                  {recipe.MANUAL06}
-                </li>
-              )}
-              {recipe.MANUAL07 && (
-                <li>
-                  {recipe.MANUAL_IMG07 && (
-                    <img src={recipe.MANUAL_IMG07} alt="" />
-                  )}
-                  {recipe.MANUAL07}
-                </li>
-              )}
-              {recipe.MANUAL08 && (
-                <li>
-                  {recipe.MANUAL_IMG08 && (
-                    <img src={recipe.MANUAL_IMG08} alt="" />
-                  )}
-                  {recipe.MANUAL08}
-                </li>
-              )}
+              {list.map((item, idx) => {
+                return item.food ? (
+                  <li>
+                    {" "}
+                    <img src={item.foodImg} alt="" /> {item.food}
+                  </li>
+                ) : (
+                  ""
+                );
+              })}
             </ul>
           </div>
         </>
