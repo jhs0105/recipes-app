@@ -2,29 +2,47 @@ import React, { useEffect, useRef, useState } from "react";
 import Header from "./Header";
 import axios from "axios";
 import { Link, useLocation, useNavigate } from "react-router-dom";
+import Row from "./Row";
 
 function List() {
   const navigate = useNavigate();
   const location = useLocation();
   const searchRef = useRef();
-  const [recipes, setRecipes] = useState(location.state);
+  const [recipes, setRecipes] = useState(location.state.food);
+  const [mainRecipes, setMainRecipes] = useState([]);
+  const [sideRecipes, setSideRecipes] = useState([]);
+  const [soupRecipes, setSoupRecipes] = useState([]);
+  const [active, setActive] = useState({
+    all: true,
+    main: false,
+    soup: false,
+    side: false,
+  });
+  //console.log(location);
+  //console.log(soupRecipes);
+
+  useEffect(() => {
+    axios.get("http://localhost:5000/main").then((res) => {
+      setMainRecipes(res.data);
+      axios.get("http://localhost:5000/soup").then((res) => {
+        setSoupRecipes(res.data);
+        axios.get("http://localhost:3000/side").then((res) => {
+          setSideRecipes(res.data);
+        });
+      });
+    });
+  }, []);
 
   function firstList() {
     setRecipes(location.state);
   }
 
   function cookrecipes(food) {
-    axios
-      .get(
-        `http://openapi.foodsafetykorea.go.kr/api/${process.env.REACT_APP_API_KEY}/COOKRCP01/json/1/5/RCP_NM=${food}`
-      )
-      .then((response) => {
-        setRecipes(response.data.COOKRCP01.row);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    axios.post("http://localhost:5000/search", { food: food }).then((res) => {
+      console.log(res);
+    });
   }
+
   return (
     <>
       <Header></Header>
@@ -32,9 +50,10 @@ function List() {
         <input
           type="text"
           ref={searchRef}
-          onKeyDown={(e) => {
+          onKeyUp={(e) => {
             if (e.code === "Enter") {
-              cookrecipes(e.target.value);
+              cookrecipes(searchRef.current.value);
+
               e.target.value = "";
             }
           }}
@@ -48,27 +67,72 @@ function List() {
           <i className="fa-solid fa-magnifying-glass"></i>
         </button>
       </div>
-      {recipes ? (
-        <div>
-          {recipes.map((item, idx) => {
-            return (
-              <ul>
-                <li>
-                  <Link to={`detail/${item.RCP_NM}`}>
-                    <img src={item.ATT_FILE_NO_MAIN} alt="" />
-                    <div>{item.RCP_NM}</div>
-                  </Link>
-                </li>
-              </ul>
-            );
-          })}
-        </div>
-      ) : (
-        <>
-          <div>다시 검색해 주세요</div>
-          <button onClick={firstList}>go back</button>
-        </>
-      )}
+      <div>
+        <button
+          onClick={() => {
+            setActive({
+              all: true,
+              main: false,
+              soup: false,
+              side: false,
+            });
+          }}
+        >
+          All
+        </button>
+        <button
+          onClick={() => {
+            setActive({
+              all: false,
+              main: true,
+              soup: false,
+              side: false,
+            });
+          }}
+        >
+          밥
+        </button>
+        <button
+          onClick={() => {
+            setActive({
+              all: false,
+              main: false,
+              soup: true,
+              side: false,
+            });
+          }}
+        >
+          국 & 찌개
+        </button>
+        <button
+          onClick={() => {
+            setActive({
+              all: false,
+              main: false,
+              soup: false,
+              side: true,
+            });
+          }}
+        >
+          반찬
+        </button>
+      </div>
+      <Row recipes={recipes} firstList={firstList} active={active.all}></Row>
+      <Row
+        recipes={mainRecipes}
+        firstList={firstList}
+        active={active.main}
+      ></Row>
+      <Row
+        recipes={sideRecipes}
+        firstList={firstList}
+        active={active.side}
+      ></Row>
+      <Row
+        recipes={soupRecipes}
+        firstList={firstList}
+        active={active.soup}
+      ></Row>
     </>
   );
 }

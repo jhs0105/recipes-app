@@ -6,24 +6,43 @@ function Main() {
   const [recipes, setRecipes] = useState([]);
 
   useEffect(() => {
-    async function cookrecipes() {
-      const foodList = await axios.get(
-        `http://openapi.foodsafetykorea.go.kr/api/${process.env.REACT_APP_API_KEY}/COOKRCP01/json/1/5`
-      );
-      setRecipes(foodList.data.COOKRCP01.row);
-    }
-    cookrecipes();
+    axios.get("http://localhost:5000").then((res) => {
+      setRecipes(res.data);
+      console.log(res.data);
+    });
   }, []);
-  if (recipes.length > 0) {
-    return (
-      <div>
-        <Link to={"/list"} state={recipes}>
-          {console.log(recipes)}
-          Main
-        </Link>
-      </div>
-    );
-  }
+
+  return (
+    <>
+      <div>오늘의 메뉴는?</div>
+      {recipes.length > 0 ? (
+        <div>
+          <Link to={"/list"} state={{ food: recipes }}>
+            Main
+          </Link>
+        </div>
+      ) : (
+        <div>잠시만 기다려 주세요</div>
+      )}
+    </>
+  );
+  // if (recipes.length > 0) {
+  //   return (
+  //     <>
+  //       <div>오늘의 메뉴는?</div>
+  //       <div>
+  //         <Link
+  //           to={"/list"}
+  //           state={{ food: recipes, main: mainRecipes, side: sideRecipes }}
+  //         >
+  //           Main
+  //         </Link>
+  //       </div>
+  //     </>
+  //   );
+  // } else {
+  //   return <div>오늘의 메뉴는?</div>;
+  // }
 }
 
 export default Main;
