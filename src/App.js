@@ -1,5 +1,4 @@
 import "./App.css";
-import Footer from "./components/Footer";
 import List from "./components/List";
 import Detail from "./components/Detail";
 import Main from "./components/Main";
@@ -14,7 +13,6 @@ function App() {
           <Route path="/list" element={<List></List>}></Route>
           <Route path="/list/detail/:title" element={<Detail></Detail>}></Route>
         </Routes>
-        <Footer></Footer>
       </div>
     </BrowserRouter>
   );

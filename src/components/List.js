@@ -1,140 +1,151 @@
 import React, { useEffect, useRef, useState } from "react";
 import Header from "./Header";
 import axios from "axios";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import styled from "styled-components";
+import { useLocation, useNavigate } from "react-router-dom";
+import main from "../assets/images/main.jpg";
 import Row from "./Row";
 
 function List() {
-  const navigate = useNavigate();
   const location = useLocation();
   const searchRef = useRef();
-  const [recipes, setRecipes] = useState(location.state.food);
-  const [mainRecipes, setMainRecipes] = useState([]);
-  const [sideRecipes, setSideRecipes] = useState([]);
-  const [soupRecipes, setSoupRecipes] = useState([]);
-  const [active, setActive] = useState({
-    all: true,
-    main: false,
-    soup: false,
-    side: false,
-  });
-  //console.log(location);
-  //console.log(soupRecipes);
-
+  const [recipes, setRecipes] = useState([]);
+  const map = location.state.map;
+  const navigate = useNavigate();
   useEffect(() => {
-    axios.get("http://localhost:5000/main").then((res) => {
-      setMainRecipes(res.data);
-      axios.get("http://localhost:5000/soup").then((res) => {
-        setSoupRecipes(res.data);
-        axios.get("http://localhost:3000/side").then((res) => {
-          setSideRecipes(res.data);
-        });
+    axios
+      .get(
+        `http://openapi.foodsafetykorea.go.kr/api/${process.env.REACT_APP_API_KEY}/COOKRCP01/json/1/10/${map}`
+      )
+      .then((res) => {
+        setRecipes(res.data.COOKRCP01.row);
       });
-    });
-  }, []);
-
-  function firstList() {
-    setRecipes(location.state);
-  }
+  }, [map]);
 
   function cookrecipes(food) {
-    axios.post("http://localhost:5000/search", { food: food }).then((res) => {
-      console.log(res);
-    });
+    axios
+      .get(
+        `http://openapi.foodsafetykorea.go.kr/api/${process.env.REACT_APP_API_KEY}/COOKRCP01/json/1/10/RCP_NM=${food} &${map}`
+      )
+      .then((res) => {
+        setRecipes(res.data.COOKRCP01.row);
+        searchRef.current.value = "";
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   }
 
   return (
-    <>
-      <Header></Header>
-      <div className="searchbox">
-        <input
-          type="text"
-          ref={searchRef}
-          onKeyUp={(e) => {
-            if (e.code === "Enter") {
+    <Wrapper>
+      <div className="searchbox" style={{ backgroundImage: `url(${main})` }}>
+        <div className="title">
+          <h1>오늘의 {location.state.name}!</h1>
+        </div>
+        <div className="item">
+          <input
+            type="text"
+            ref={searchRef}
+            placeholder="search food"
+            onKeyUp={(e) => {
+              if (e.code === "Enter") {
+                cookrecipes(searchRef.current.value);
+              }
+            }}
+          />
+          <button
+            onClick={() => {
               cookrecipes(searchRef.current.value);
-
-              e.target.value = "";
-            }
-          }}
-        />
-        <button
-          onClick={() => {
-            cookrecipes(searchRef.current.value);
-            searchRef.current.value = "";
-          }}
-        >
-          <i className="fa-solid fa-magnifying-glass"></i>
-        </button>
+            }}
+          >
+            <i className="fa-solid fa-magnifying-glass"></i>
+          </button>
+          <button
+            onClick={() => {
+              navigate("/");
+            }}
+          >
+            <i className="fa-solid fa-list"></i>
+          </button>
+        </div>
       </div>
-      <div>
-        <button
-          onClick={() => {
-            setActive({
-              all: true,
-              main: false,
-              soup: false,
-              side: false,
-            });
-          }}
-        >
-          All
-        </button>
-        <button
-          onClick={() => {
-            setActive({
-              all: false,
-              main: true,
-              soup: false,
-              side: false,
-            });
-          }}
-        >
-          밥
-        </button>
-        <button
-          onClick={() => {
-            setActive({
-              all: false,
-              main: false,
-              soup: true,
-              side: false,
-            });
-          }}
-        >
-          국 & 찌개
-        </button>
-        <button
-          onClick={() => {
-            setActive({
-              all: false,
-              main: false,
-              soup: false,
-              side: true,
-            });
-          }}
-        >
-          반찬
-        </button>
-      </div>
-      <Row recipes={recipes} firstList={firstList} active={active.all}></Row>
-      <Row
-        recipes={mainRecipes}
-        firstList={firstList}
-        active={active.main}
-      ></Row>
-      <Row
-        recipes={sideRecipes}
-        firstList={firstList}
-        active={active.side}
-      ></Row>
-      <Row
-        recipes={soupRecipes}
-        firstList={firstList}
-        active={active.soup}
-      ></Row>
-    </>
+      {recipes == "" ? (
+        <div className="comment">잠시 기다려주세요</div>
+      ) : (
+        <Row recipes={recipes}></Row>
+      )}
+    </Wrapper>
   );
 }
-
+const Wrapper = styled.div`
+  max-width: 800px;
+  width: 100%;
+  .searchbox {
+    background-size: cover;
+    height: 200px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    border-radius: 0 0 30px 30px;
+    position: relative;
+    .title {
+      max-width: 800px;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      h1 {
+        font-weight: 800;
+        font-size: 30px;
+        color: white;
+        text-shadow: 2px 2px 2px #333;
+        padding: 20px 0;
+      }
+    }
+    .item {
+      max-width: 800px;
+      width: 80%;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      position: absolute;
+      margin-top: 90px;
+      input {
+        padding: 0 10px;
+        box-sizing: border-box;
+        width: 100%;
+        height: 30px;
+        background-color: rgba(255, 255, 255, 0.5);
+        border-radius: 20px 0 0 20px;
+      }
+      button {
+        border: none;
+        background-color: transparent;
+        display: flex;
+        .fa-list {
+          background-color: rgba(255, 255, 255, 1);
+          border-radius: 0 20px 20px 0;
+          height: 30px;
+          width: 30px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+        .fa-magnifying-glass {
+          position: absolute;
+          top: 50%;
+          transform: translateY(-50%);
+          margin-left: -20px;
+        }
+      }
+    }
+  }
+  .comment {
+    margin-top: 100px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+`;
 export default List;
