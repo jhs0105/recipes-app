@@ -8,6 +8,7 @@ function Detail() {
   const [loading, setLoading] = useState(true);
   const title = useParams().title;
   const list = [];
+
   const navigate = useNavigate();
 
   useEffect(
@@ -18,12 +19,12 @@ function Detail() {
         )
         .then((response) => {
           setRecipe(response.data.COOKRCP01.row[0]);
-          for (let i = 1; i < 20; i++) {
-            list.push({
-              food: recipe[`MANUAL0${i}`],
-              foodImg: recipe[`MANUAL_IMG0${i}`],
-            });
-          }
+          // for (let i = 1; i < 20; i++) {
+          //   list.push({
+          //     food: recipe[`MANUAL0${i}`],
+          //     foodImg: recipe[`MANUAL_IMG0${i}`],
+          //   });
+          // }
           setLoading(false);
         });
     },
@@ -35,7 +36,6 @@ function Detail() {
       foodImg: recipe[`MANUAL_IMG0${i}`],
     });
   }
-  //console.log(recipe.RCP_PARTS_DTLS);
 
   return (
     <Wrapper>
@@ -57,20 +57,30 @@ function Detail() {
             <img src={recipe.ATT_FILE_NO_MAIN} alt="" />
           </div>
           <div className="contents">
-            <div className="ingredient">{recipe.RCP_PARTS_DTLS}</div>
             <div className="nutrition">
-              <div>{recipe.INFO_ENG} Calories</div>
-              <div>{recipe.INFO_CAR} Carbs</div>
-              <div>{recipe.INFO_PRO} Protein</div>
-              <div>{recipe.INFO_FAT} Fat</div>
-              <div>{recipe.INFO_NA} Natrium</div>
+              <div>
+                <span>{recipe.INFO_ENG}</span> Calories
+              </div>
+              <div>
+                <span>{recipe.INFO_CAR} </span>Carbs
+              </div>
+              <div>
+                <span>{recipe.INFO_PRO}</span> Protein
+              </div>
+              <div>
+                <span>{recipe.INFO_FAT}</span> Fat
+              </div>
+              <div>
+                <span>{recipe.INFO_NA}</span> Natrium
+              </div>
             </div>
+            <div className="ingredient">{recipe.RCP_PARTS_DTLS}</div>
             <ul>
               {list.map((item, idx) => {
                 return item.food ? (
                   <li key={idx}>
                     {" "}
-                    <img src={item.foodImg} alt="" /> {item.food}
+                    <img src={item.foodImg} alt="" /> <div>{item.food}</div>
                   </li>
                 ) : (
                   ""
@@ -85,6 +95,7 @@ function Detail() {
 }
 
 const Wrapper = styled.div`
+  max-width: 800px;
   .detailPage {
     max-width: 800px;
     .title {
@@ -112,8 +123,69 @@ const Wrapper = styled.div`
       }
     }
     .contents {
+      width: 100%;
       .ingredient {
-        white-space: pre;
+        padding: 20px 10px;
+        white-space: pre-line;
+        line-height: 1.6;
+        font-size: 14px;
+      }
+      .nutrition {
+        margin-top: 20px;
+        display: flex;
+        flex-wrap: wrap;
+        font-size: 12px;
+        div {
+          background-color: #ccc;
+          height: 32px;
+          margin: 6px;
+          border-radius: 30px;
+          box-sizing: border-box;
+          display: flex;
+          align-items: center;
+          justify-content: flex-start;
+          padding: 0 10px 0 0;
+          &:nth-child(1) {
+            background-color: orangered;
+          }
+          &:nth-child(2) {
+            background-color: royalblue;
+          }
+          &:nth-child(3) {
+            background-color: skyblue;
+          }
+          &:nth-child(4) {
+            background-color: pink;
+          }
+          &:nth-child(5) {
+            background-color: orchid;
+          }
+          span {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #fff;
+            width: 32px;
+            aspect-ratio: 1;
+            border-radius: 100%;
+            border: 1px solid #ccc;
+            text-align: center;
+            box-sizing: border-box;
+            margin-right: 4px;
+            font-size: 14px;
+            font-weight: 800;
+          }
+        }
+      }
+      ul {
+        li {
+          display: flex;
+          margin: 0 10px 10px 10px;
+          img {
+            width: 120px;
+            margin-right: 10px;
+          }
+        }
       }
     }
   }

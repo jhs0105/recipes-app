@@ -2,7 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 
-function Row({ recipes, firstList }) {
+function Row({ recipes }) {
   //const [recipes, setRecipes] = useState(location.state);
   const ellipsis = (str, total) => {
     return str.length > total ? str.substr(0, total - 1) + "..." : str;
@@ -27,7 +27,6 @@ function Row({ recipes, firstList }) {
       ) : (
         <>
           <div>다시 검색해 주세요</div>
-          <button onClick={firstList}>go back</button>
         </>
       )}
     </Wrapper>
@@ -54,7 +53,8 @@ const Wrapper = styled.div`
           border-radius: 100%;
           overflow: hidden;
           img {
-            height: 140px;
+            width: 120px;
+            height: 100%;
             object-fit: fill;
           }
         }
